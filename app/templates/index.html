@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Events</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+</head>
+<body>
+    <h1>Enter a Year to Get Historical Events</h1>
+    <form id="yearForm">
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="events"></div>
+
+    <script>
+        $('#yearForm').on('submit', function(event) {
+            event.preventDefault();
+
+            const year = $('#year').val();
+
+            $.get(`/history?year=${year}`, function(data) {
+                if (data.error) {
+                    $('#events').html(`<p>Error: ${data.error}</p>`);
+                } else {
+                    console.log(data);
+                    let eventsHtml = '<h2>Historical Events:</h2><ul>';
+                    data.forEach(event => {
+                        eventsHtml += `<li><strong>${event.year}</strong>: ${event.event}</li>`;
+                    });
+                    eventsHtml += '</ul>';
+                    $('#events').html(eventsHtml);
+                }
+            }).fail(function() {
+                $('#events').html('<p>Failed to fetch data. Please try again.</p>');
+            });
+        });
+    </script>
+</body>
+</html>
