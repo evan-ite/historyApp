@@ -46,5 +46,8 @@ def history():
     # ]
     # return jsonify(response_data)
 
-# Run the Flask app (127.0.0.1:5000 by default).
-app.run(debug=True)
+# Get the port from the environment (Heroku provides a dynamic port, fallback to 5000 for local development)
+port = int(os.environ.get('PORT', 5000))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=port)
