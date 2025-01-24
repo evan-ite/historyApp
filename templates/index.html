@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Events</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1 id="title">Historical Events to Impress Friends</h1>
+    <form id="yearForm">
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="events"></div>
+
+    <script>
+        $('#yearForm').on('submit', function(event) {
+        event.preventDefault();
+
+        const year = $('#year').val();
+
+        $.get(`/history?year=${year}`, function(data) {
+            if (data.error) {
+                $('#events').html(`<p class="error">Error: ${data.error}</p>`);
+            } else {
+                console.log(data);
+                let eventsHtml = '<h2>Historical Events:</h2>';
+                data.forEach(event => {
+                    eventsHtml += `
+                        <div class="card">
+                            <h3>${event.event}</h3>
+                            <p><span class="year">${event.year}</span></p>
+                            <p>${event.event}</p>
+                        </div>
+                    `;
+                });
+                $('#events').html(eventsHtml);
+            }
+        }).fail(function() {
+            $('#events').html('<p class="error">Failed to fetch data. Please try again.</p>');
+        });
+    });
+
+    </script>
+</body>
+</html>
